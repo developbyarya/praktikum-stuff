@@ -1,0 +1,29 @@
+body {
+  background-color: white;
+}
+
+.card-bg {
+  background-color: #252524;
+  border: 1px solid #3d3b3b;
+}
+
+.card-bg > * {
+  color: white;
+  border-radius: 12px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+form {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.radio-group {
+  display: flex;
+  gap: 4px;
+}

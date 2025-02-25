@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Futures OHLCV Downloader</title>
+</head>
+<body>
+    <h2>Download Binance Futures OHLCV Data</h2>
+    <label for="pair">Trading Pair (e.g., BTCUSDT):</label>
+    <input type="text" id="pair" value="BTCUSDT"><br><br>
+    
+    <label for="timeframe">Timeframe:</label>
+    <select id="timeframe">
+        <option value="1m">1m</option>
+        <option value="5m">5m</option>
+        <option value="15m">15m</option>
+        <option value="30m">30m</option>
+        <option value="1h">1h</option>
+        <option value="4h">4h</option>
+        <option value="1d">1d</option>
+    </select><br><br>
+    
+    <label for="limit">Data Length:</label>
+    <input type="number" id="limit" value="500" min="1" max="1000"><br><br>
+    
+    <button onclick="downloadOHLCV()">Download Data</button>
+    
+    <script>
+        function downloadOHLCV() {
+            const pair = document.getElementById("pair").value.toUpperCase();
+            const timeframe = document.getElementById("timeframe").value;
+            const limit = document.getElementById("limit").value;
+            
+            const url = `https://fapi.binance.com/fapi/v1/klines?symbol=${pair}&interval=${timeframe}&limit=${limit}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const csvData = data.map(entry => entry.join(",")).join("\n");
+                    const blob = new Blob(["timestamp,open,high,low,close,volume,close_time,quote_asset_volume,trade_count,taker_buy_base_asset_volume,taker_buy_quote_asset_volume,ignore\n" + csvData], { type: 'text/csv' });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `${pair}_${timeframe}_ohlcv.csv`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+    </script>
+</body>
+</html>
